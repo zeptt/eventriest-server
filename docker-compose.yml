@@ -1,0 +1,24 @@
+version: "3"
+services:
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - eventriest_network
+  api-server:
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - PORT=3000
+    networks:
+      - eventriest_network
+
+networks:
+  eventriest_network:
+    driver: bridge
