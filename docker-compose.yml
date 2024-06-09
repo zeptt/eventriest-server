@@ -15,8 +15,8 @@ services:
       context: ./api-server
       dockerfile: Dockerfile
     restart: always
-    environment:
-      - PORT=3000
+    env_file:
+      - ./api_server.env
     networks:
       - eventriest_network
     scale: 2
@@ -29,9 +29,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - ./.env
-    ports:
-      - "3002:3002"
+      - ./email_service.env
 
 networks:
   eventriest_network:
