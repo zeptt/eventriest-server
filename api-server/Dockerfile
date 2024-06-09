@@ -14,8 +14,8 @@ RUN pnpm install
 
 COPY --chown=node:node . .
 
-EXPOSE 3000
+EXPOSE ${PORT}
 
 RUN pnpm build
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "start", "-p", "$PORT"]
