@@ -31,6 +31,32 @@ services:
     env_file:
       - ./email_service.env
 
+  database:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /pg-data
+
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/pg-data
+    networks:
+      - eventriest_network
+
+  redis-db:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - eventriest_network
+
 networks:
   eventriest_network:
     driver: bridge
+
+volumes:
+  pg-data:
