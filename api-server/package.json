@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "^1.10.8",
+    "@grpc/proto-loader": "^0.7.13",
     "@prisma/client": "^5.15.0",
     "@t3-oss/env-core": "^0.10.1",
     "@types/bcrypt": "^5.0.2",

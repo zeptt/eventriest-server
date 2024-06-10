@@ -30,6 +30,10 @@ services:
     restart: always
     env_file:
       - ./email_service.env
+    networks:
+      - eventriest_network
+    ports:
+      - "50051:50051"
 
   database:
     image: postgres:latest
@@ -38,7 +42,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /pg-data
-
     ports:
       - "5432:5432"
     volumes:

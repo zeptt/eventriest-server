@@ -3,6 +3,7 @@ import { loginSchema, registerSchema } from "../schema/auth";
 import bcrypt from "bcrypt";
 import { db } from "../db";
 import { errorResponse, successResponse } from "../utils/responses";
+import { SendEmail } from "../utils/email-service";
 
 const authRouter = Router();
 
@@ -68,16 +69,32 @@ authRouter.post("/register", async (req, res) => {
 
     req.session.user = { id: user.id, email: user.email, name: user.name };
 
-    successResponse(
-      res,
-      "User created successfully",
-      {
+    // Send Invitation Email
+
+    const emailPayload = {
+      to: email,
+      subject: "Welcome to our platform",
+      body: `<h1>Welcome to our platform</h1>
+        <p>Hi ${name},</p>
+        <p>Thank you for registering on our platform.</p>
+        <p>Best Regards,</p>
+        <p>Team</p>`,
+      name,
+      cc: "",
+      bcc: "",
+    };
+
+    const emailResponse = await SendEmail(emailPayload);
+
+    if (emailResponse.success) {
+      successResponse(res, "User created successfully", {
         id: user.id,
         email: user.email,
         name: user.name,
-      },
-      201
-    );
+      });
+    } else {
+      errorResponse(res, emailResponse.message, 500);
+    }
   } catch (e: any) {
     errorResponse(res, e.message, 500);
   }

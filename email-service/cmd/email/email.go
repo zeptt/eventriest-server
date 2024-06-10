@@ -51,7 +51,8 @@ func SendNewEmail(in *pb.EmailRequest) (*pb.EmailResponse, error) {
 
 	body += "From: " + from + "\n"
 	body += "To: " + in.To + "\n"
-	body += "Subject: " + in.Subject + "\n\n"
+	body += "Subject: " + in.Subject + "\n"
+	body += "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body += in.Body
 
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, []byte(body))
