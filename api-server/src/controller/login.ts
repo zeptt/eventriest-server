@@ -29,14 +29,14 @@ const login = async (req: Request, res: Response) => {
 
     req.session.user = { id: user.id, email: user.email, name: user.name };
 
-    successResponse(res, "Logged in successfully", {
+    return successResponse(res, "Logged in successfully", {
       id: user.id,
       email: user.email,
       name: user.name,
       username: user.username,
     });
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -87,17 +87,17 @@ const register = async (req: Request, res: Response) => {
     const emailResponse = await SendEmail(emailPayload);
 
     if (emailResponse.success) {
-      successResponse(res, "User created successfully", {
+      return successResponse(res, "User created successfully", {
         id: user.id,
         email: user.email,
         name: user.name,
         username: user.username,
       });
     } else {
-      errorResponse(res, emailResponse.message, 500);
+      return errorResponse(res, emailResponse.message, 500);
     }
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -108,12 +108,12 @@ const logout = async (req: Request, res: Response) => {
         return errorResponse(res, "Failed to logout", 500);
       }
 
-      successResponse(res, "Logged out successfully", {
+      return successResponse(res, "Logged out successfully", {
         message: "Logged out successfully",
       }, 200);
     });
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 

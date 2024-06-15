@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "build": "rimraf dist && tsc",
     "dev": "nodemon src/index.ts",
-    "demo": "bash script.sh" 
+    "demo": "bash script.sh"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
+    "@types/redis": "^4.0.11",
     "prisma": "^5.15.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"

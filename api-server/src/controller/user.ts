@@ -14,9 +14,9 @@ const getAllUsers = async (req: Request, res: Response) => {
         updatedAt: true,
       },
     });
-    successResponse(res, "Users fetched successfully", users);
+    return successResponse(res, "Users fetched successfully", users);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -39,16 +39,33 @@ const getLoggedInUser = async (req: Request, res: Response) => {
         username: true,
         createdAt: true,
         updatedAt: true,
+        announcements: true,
+        events: true,
+        tickets: true,
+        TicketPurchase: true,
+        Attendee: true,
+        Subscription: true,
+        tips: true,
+        _count: {
+          select: {
+            events: true,
+            tickets: true,
+            TicketPurchase: true,
+            Attendee: true,
+            Subscription: true,
+            tips: true,
+          }
+        }
       },
     });
 
     if (!userFromDB) {
       return errorResponse(res, "User not found", 404);
     }
-
-    successResponse(res, "User fetched successfully", userFromDB);
+    
+    return successResponse(res, "User fetched successfully", userFromDB);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 

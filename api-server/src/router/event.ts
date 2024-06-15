@@ -8,8 +8,9 @@ import {
   getLoggedInUserEvents,
   updateEvent,
 } from "../controller/event";
+import { errorResponse } from "../utils/responses";
 
-export const eventRouter = Router();
+const eventRouter = Router();
 
 eventRouter.get("/", getAllEvents);
 eventRouter.get("/my-events", getLoggedInUserEvents);
@@ -21,6 +22,8 @@ eventRouter.delete("/:id", deleteEvent);
 
 eventRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({ error: "EventRouter Error", message: err.message });
+    errorResponse(res, "Event Router Error"+ err.message, 500);
   }
 );
+
+export default eventRouter;

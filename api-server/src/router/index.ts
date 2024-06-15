@@ -1,8 +1,9 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import authRouter from "./auth";
 import isAuthenticated from "../middlewares/authMiddleware";
-import { userRouter } from "./user";
-import { eventRouter } from "./event";
+import userRouter from "./user";
+import eventRouter from "./event";
+import ticketRouter from "./ticket";
 
 const mainRouter = Router();
 
@@ -17,7 +18,6 @@ mainRouter.get("/health", (_, res) => {
 });
 
 // Configure routes here
-
 mainRouter.use("/auth", authRouter);
 
 // Un Protected Routes
@@ -26,6 +26,8 @@ mainRouter.use("/auth", authRouter);
 
 // Authenticated Routes
 
+
+// Event Routes
 mainRouter.use("/event", eventRouter);
 
 mainRouter.use(isAuthenticated());
@@ -37,8 +39,11 @@ mainRouter.get("/protected", (req, res) => {
 // User Routes
 mainRouter.use("/user", userRouter);
 
-// 404 Fallback
+// Ticket Routes
+mainRouter.use("/event", ticketRouter);
 
+
+// 404 Fallback
 mainRouter.use((_, res) => {
   res.status(404).send("Route Not Found!");
 });

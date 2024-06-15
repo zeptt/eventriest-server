@@ -36,9 +36,9 @@ const getAllEvents = async (req: Request, res: Response) => {
       events = await db.event.findMany();
     }
 
-    successResponse(res, "Events fetched successfully", events);
+    return successResponse(res, "Events fetched successfully", events);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -55,9 +55,9 @@ const getEvent = async (req: Request, res: Response) => {
       return errorResponse(res, "Event not found", 404);
     }
 
-    successResponse(res, "Event fetched successfully", event);
+    return successResponse(res, "Event fetched successfully", event);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -73,9 +73,9 @@ const getLoggedInUserEvents = async (req: Request, res: Response) => {
       return errorResponse(res, "No events found", 404);
     }
 
-    successResponse(res, "Events fetched successfully", events);
+    return successResponse(res, "Events fetched successfully", events);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -101,9 +101,9 @@ const getLoggedInEvent = async (req: Request, res: Response) => {
       );
     }
 
-    successResponse(res, "Event fetched successfully", event);
+    return successResponse(res, "Event fetched successfully", event);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -129,9 +129,9 @@ const createEvent = async (req: Request, res: Response) => {
       },
     });
 
-    successResponse(res, "Event created successfully", event);
+    return successResponse(res, "Event created successfully", event);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -173,9 +173,9 @@ const updateEvent = async (req: Request, res: Response) => {
       },
     });
 
-    successResponse(res, "Event updated successfully", updatedEvent);
+    return successResponse(res, "Event updated successfully", updatedEvent);
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 
@@ -207,9 +207,9 @@ const deleteEvent = async (req: Request, res: Response) => {
       },
     });
 
-    successResponse(res, "Event deleted successfully", {});
+    return successResponse(res, "Event deleted successfully", {});
   } catch (e: any) {
-    errorResponse(res, e.message, 500);
+    return errorResponse(res, e.message, 500);
   }
 };
 

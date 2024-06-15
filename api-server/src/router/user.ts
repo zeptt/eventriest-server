@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { getAllUsers, getLoggedInUser } from "../controller/user";
+import { errorResponse } from "../utils/responses";
 
-export const userRouter = Router();
+const userRouter = Router();
 
 userRouter.get("/all", getAllUsers);
 userRouter.get("/me", getLoggedInUser);
 
 userRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({ error: "UserRouter Error", message: err.message });
+    errorResponse(res, "User Router Error" + err.message, 500);
   }
 );
+
+export default userRouter;
