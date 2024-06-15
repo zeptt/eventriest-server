@@ -41,6 +41,21 @@ services:
     depends_on:
       - kafka
 
+  cache-service:
+    build:
+      context: ./cache-service
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./cache_service.env
+    networks:
+      - eventriest_network
+    ports:
+      - "50052:50052"
+    depends_on:
+      - redis-db
+      - api-server
+
   database:
     image: postgres:latest
     restart: always
