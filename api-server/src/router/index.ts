@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRouter from "./auth";
 import isAuthenticated from "../middlewares/authMiddleware";
 import { userRouter } from "./user";
+import { eventRouter } from "./event";
 
 const mainRouter = Router();
 
@@ -24,6 +25,8 @@ mainRouter.use("/auth", authRouter);
 // eg: mainRouter.use("/test", testRouter);
 
 // Authenticated Routes
+
+mainRouter.use("/event", eventRouter);
 
 mainRouter.use(isAuthenticated());
 
