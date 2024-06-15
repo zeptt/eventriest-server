@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRouter from "./auth";
 import isAuthenticated from "../middlewares/authMiddleware";
+import { userRouter } from "./user";
 
 const mainRouter = Router();
 
@@ -29,6 +30,9 @@ mainRouter.use(isAuthenticated());
 mainRouter.get("/protected", (req, res) => {
   res.send(req.session.user);
 });
+
+// User Routes
+mainRouter.use("/user", userRouter);
 
 // 404 Fallback
 
