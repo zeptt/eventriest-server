@@ -10,37 +10,43 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  password      String
-  name          String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  events        Event[]        @relation("EventOrganizer")
-  tips          Tip[]
-  announcements Announcement[]
-  tickets       Ticket[]
-  Attendee      Attendee[]
-  Subscription  Subscription[]
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  password       String
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  events         Event[]          @relation("EventOrganizer")
+  tips           Tip[]
+  announcements  Announcement[]
+  tickets        Ticket[]
+  Attendee       Attendee[]
+  Subscription   Subscription[]
+  TicketPurchase TicketPurchase[]
 }
 
 model Event {
-  id          Int    @id @default(autoincrement())
-  title       String
-  description String
-
-  startTime     DateTime
-  endTime       DateTime
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  organizerId   Int
-  organizer     User           @relation("EventOrganizer", fields: [organizerId], references: [id])
-  attendees     Attendee[]
-  tips          Tip[]
-  announcements Announcement[]
-  marketing     Marketing[]
-  tickets       Ticket[]
-  Subscription  Subscription[]
+  id             Int              @id @default(autoincrement())
+  title          String
+  description    String
+  image          String
+  visibility     String           @default("public")
+  location       String           @default("online")
+  link           String?
+  credentials    String?
+  startTime      DateTime
+  endTime        DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  organizerId    Int
+  organizer      User             @relation("EventOrganizer", fields: [organizerId], references: [id])
+  attendees      Attendee[]
+  tips           Tip[]
+  announcements  Announcement[]
+  marketing      Marketing[]
+  tickets        Ticket[]
+  Subscription   Subscription[]
+  TicketPurchase TicketPurchase[]
 }
 
 model Attendee {
@@ -100,13 +106,33 @@ model Subscription {
 }
 
 model Ticket {
+  id            Int              @id @default(autoincrement())
+  name          String
+  type          String           @default("free")
+  price         Float
+  totalQuantity Int
+  quantityLeft  Int
+  startTime     DateTime
+  endTime       DateTime
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  eventId       Int
+  event         Event            @relation(fields: [eventId], references: [id])
+  purchases     TicketPurchase[]
+  User          User?            @relation(fields: [userId], references: [id])
+  userId        Int?
+}
+
+model TicketPurchase {
   id        Int      @id @default(autoincrement())
-  type      String
+  ticketId  Int
+  userId    Int
+  eventId   Int
+  quantity  Int
   price     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int
-  eventId   Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
   event     Event    @relation(fields: [eventId], references: [id])
 }
