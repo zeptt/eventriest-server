@@ -3,6 +3,7 @@ import mainRouter from "./router";
 import * as redis from "redis";
 import RedisStore from "connect-redis";
 import session from "express-session";
+import { rateLimiter } from "./middlewares/rateLimiter";
 
 interface User {
   id: number;
@@ -20,9 +21,8 @@ async function runServer() {
   const app = express();
 
   app.use(express.json());
-
   app.use(express.urlencoded({ extended: true }));
-
+  app.use(rateLimiter);
   app.set("trust proxy", 1);
 
   const client = redis.createClient({
