@@ -88,6 +88,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - eventriest_network
+
   init-kafka-container:
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -95,13 +96,9 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command: |
       "
-      # rather than giving sleep 15 use this 
-      # to block init container to wait for Kafka broker to be ready  
       kafka-topics --bootstrap-server kafka:9092 --list
 
-      # create init topics
-      kafka-topics --create --partitions 3 --bootstrap-server kafka:9092 --topic input
-      kafka-topics --create --bootstrap-server kafka:9092 --partitions 1 --topic output
+      kafka-topics --create --partitions 2 --bootstrap-server kafka:9092 --topic logger
       "
     networks:
       - eventriest_network
