@@ -19,8 +19,12 @@ services:
       - ./api_server.env
     networks:
       - eventriest_network
-    scale: 1
+    scale: 2
     depends_on:
+      - email-service
+      - database
+      - redis-db
+      - kafka
       - proxy
 
   email-service:
@@ -34,6 +38,8 @@ services:
       - eventriest_network
     ports:
       - "50051:50051"
+    depends_on:
+      - kafka
 
   database:
     image: postgres:latest
@@ -54,6 +60,49 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - eventriest_network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - eventriest_network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - eventriest_network
+  init-kafka-container:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      # rather than giving sleep 15 use this 
+      # to block init container to wait for Kafka broker to be ready  
+      kafka-topics --bootstrap-server kafka:9092 --list
+
+      # create init topics
+      kafka-topics --create --partitions 3 --bootstrap-server kafka:9092 --topic input
+      kafka-topics --create --bootstrap-server kafka:9092 --partitions 1 --topic output
+      "
     networks:
       - eventriest_network
 
