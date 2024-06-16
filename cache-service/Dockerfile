@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY ./ ./
 
-RUN go build -o ./cache-service-exec ./cmd/main.go
+RUN go build -o ./cache-service-exec .
 
 RUN chmod +x ./cache-service-exec
 
