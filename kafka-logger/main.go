@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/google/uuid"
 )
 
 var (
@@ -25,10 +24,9 @@ var (
 func init() {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
+			Region:      aws.String("ap-south-1"),
 			Credentials: credentials.NewEnvCredentials(),
 		},
-
 	})
 
 	if err != nil {
@@ -106,7 +104,7 @@ func ensureLogGroupExists(name string) error {
 
 // createLogStream will make a new logStream with a random uuid as its name.
 func createLogStream() error {
-	name := uuid.New().String()
+	name := "log-stream"
 
 	_, err := cwl.CreateLogStream(&cloudwatchlogs.CreateLogStreamInput{
 		LogGroupName:  &logGroupName,
