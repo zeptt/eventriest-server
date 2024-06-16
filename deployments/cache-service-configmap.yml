@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cache-server-configmap
+  labels:
+    app: cache-service
+data:
+  PORT: "50052"
+  CACHE_SERVER_URL: "http://api-service:80"
+  REDIS_URL: "redis://redis:6379"
