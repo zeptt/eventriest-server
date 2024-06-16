@@ -56,6 +56,19 @@ services:
       - redis-db
       - api-server
 
+  logger-service:
+    build:
+      context: ./kafka-logger
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./kafka_logger.env
+    networks:
+      - eventriest_network
+    depends_on:
+      - kafka
+      - init-kafka-container
+
   database:
     image: postgres:latest
     restart: always
