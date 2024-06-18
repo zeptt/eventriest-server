@@ -25,6 +25,7 @@ services:
       - database
       - redis-db
       - kafka
+      - zookeeper
       - proxy
 
   email-service:
