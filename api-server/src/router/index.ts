@@ -4,6 +4,7 @@ import isAuthenticated from "../middlewares/authMiddleware";
 import userRouter from "./user";
 import eventRouter from "./event";
 import ticketRouter from "./ticket";
+import sendSlackAlarmMessage from "../utils/slack-service";
 
 const mainRouter = Router();
 
@@ -13,7 +14,8 @@ mainRouter.get("/", (req, res) => {
   res.send("API Server is running!");
 });
 
-mainRouter.get("/health", (_, res) => {
+mainRouter.get("/health", async (_, res) => {
+  await sendSlackAlarmMessage("API Server is healthy!");
   res.status(200).send("ok");
 });
 
@@ -25,7 +27,6 @@ mainRouter.use("/auth", authRouter);
 // eg: mainRouter.use("/test", testRouter);
 
 // Authenticated Routes
-
 
 // Event Routes
 mainRouter.use("/event", eventRouter);
@@ -41,7 +42,6 @@ mainRouter.use("/user", userRouter);
 
 // Ticket Routes
 mainRouter.use("/event", ticketRouter);
-
 
 // 404 Fallback
 mainRouter.use((_, res) => {
