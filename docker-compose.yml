@@ -58,11 +58,11 @@ services:
 
   logger-service:
     build:
-      context: ./kafka-logger
+      context: ./logger
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - ./kafka_logger.env
+      - ./logger.env
     networks:
       - eventriest_network
     depends_on:

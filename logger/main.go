@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"logger/parse_env"
 	"os"
 	"sync"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/google/uuid"
 )
 
 var (
@@ -36,18 +38,20 @@ func init() {
 	cwl = cloudwatchlogs.New(sess)
 
 	err = ensureLogGroupExists(logGroupName)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+func main() {
+	env, err := parse_env.ParseEnv()
+
 	if err != nil {
 		panic(err)
 	}
 
-}
-
-func main() {
-	kafkaServer := os.Getenv("KAFKA_SERVER_URL")
-	kafkaTopic := os.Getenv("KAFKA_TOPIC")
-	groupID := os.Getenv("KAFKA_GROUP_ID")
-
-	config := kafka.ConfigMap{"bootstrap.servers": kafkaServer, "group.id": groupID, "go.events.channel.enable": true}
+	config := kafka.ConfigMap{"bootstrap.servers": env.KAFKA_SERVER_URL, "group.id": env.KAFKA_GROUP_ID, "go.events.channel.enable": true}
 
 	consumer, consumerCreateErr := kafka.NewConsumer(&config)
 
@@ -56,13 +60,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	subscriptionErr := consumer.Subscribe(kafkaTopic, nil)
+	subscriptionErr := consumer.Subscribe(env.KAFKA_TOPIC, nil)
 
 	if subscriptionErr != nil {
-		fmt.Println("Unable to subscribe to topic " + kafkaTopic + " due to error - " + subscriptionErr.Error())
+		fmt.Println("Unable to subscribe to topic " + env.KAFKA_TOPIC + " due to error - " + subscriptionErr.Error())
 		os.Exit(1)
 	} else {
-		fmt.Println("subscribed to topic ", kafkaTopic)
+		fmt.Println("subscribed to topic ", env.KAFKA_TOPIC)
 	}
 
 	go processQueue(consumer)
@@ -104,7 +108,7 @@ func ensureLogGroupExists(name string) error {
 
 // createLogStream will make a new logStream with a random uuid as its name.
 func createLogStream() error {
-	name := "log-stream"
+	name := "eventriest-" + uuid.New().String() + "-" + "logStream"
 
 	_, err := cwl.CreateLogStream(&cloudwatchlogs.CreateLogStreamInput{
 		LogGroupName:  &logGroupName,
