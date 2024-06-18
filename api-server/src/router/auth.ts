@@ -10,7 +10,7 @@ authRouter.post("/logout", logout);
 
 authRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    errorResponse(res, "Auth Router Error" + err.message, 500);
+    errorResponse(req, res, "Auth Router Error" + err.message, 500);
   }
 );
 

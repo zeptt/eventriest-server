@@ -9,7 +9,7 @@ userRouter.get("/me", getLoggedInUser);
 
 userRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    errorResponse(res, "User Router Error" + err.message, 500);
+    errorResponse(req, res, "User Router Error" + err.message, 500);
   }
 );
 

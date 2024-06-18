@@ -16,13 +16,13 @@ const login = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return errorResponse(res, "User not found", 404);
+      return errorResponse(req, res, "User not found", 404);
     }
 
     const isValidPassword = bcrypt.compareSync(password, user.password);
 
     if (!isValidPassword) {
-      return errorResponse(res, "Invalid password", 400);
+      return errorResponse(req, res, "Invalid password", 400);
     }
 
     // save session
@@ -36,7 +36,7 @@ const login = async (req: Request, res: Response) => {
       username: user.username,
     });
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -51,7 +51,7 @@ const register = async (req: Request, res: Response) => {
     });
 
     if (existingUser) {
-      return errorResponse(res, "User already exists", 400);
+      return errorResponse(req, res, "User already exists", 400);
     }
 
     const passwordHash = bcrypt.hashSync(password, 10);
@@ -94,10 +94,10 @@ const register = async (req: Request, res: Response) => {
         username: user.username,
       });
     } else {
-      return errorResponse(res, emailResponse.message, 500);
+      return errorResponse(req, res, emailResponse.message, 500);
     }
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -105,15 +105,20 @@ const logout = async (req: Request, res: Response) => {
   try {
     req.session.destroy((err) => {
       if (err) {
-        return errorResponse(res, "Failed to logout", 500);
+        return errorResponse(req, res, "Failed to logout", 500);
       }
 
-      return successResponse(res, "Logged out successfully", {
-        message: "Logged out successfully",
-      }, 200);
+      return successResponse(
+        res,
+        "Logged out successfully",
+        {
+          message: "Logged out successfully",
+        },
+        200
+      );
     });
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 

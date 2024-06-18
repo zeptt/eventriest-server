@@ -16,7 +16,7 @@ const getAllUsers = async (req: Request, res: Response) => {
     });
     return successResponse(res, "Users fetched successfully", users);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -25,7 +25,7 @@ const getLoggedInUser = async (req: Request, res: Response) => {
     const user = req.session.user;
 
     if (!user) {
-      return errorResponse(res, "User not found", 404);
+      return errorResponse(req, res, "User not found", 404);
     }
 
     const userFromDB = await db.user.findUnique({
@@ -54,18 +54,18 @@ const getLoggedInUser = async (req: Request, res: Response) => {
             Attendee: true,
             Subscription: true,
             tips: true,
-          }
-        }
+          },
+        },
       },
     });
 
     if (!userFromDB) {
-      return errorResponse(res, "User not found", 404);
+      return errorResponse(req, res, "User not found", 404);
     }
-    
+
     return successResponse(res, "User fetched successfully", userFromDB);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 

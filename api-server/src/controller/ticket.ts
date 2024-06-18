@@ -17,7 +17,12 @@ const createTicket = async (req: Request, res: Response) => {
     });
 
     if (!event || event.organizerId !== userId) {
-      return errorResponse(res, "No events found for the specified user", 404);
+      return errorResponse(
+        req,
+        res,
+        "No events found for the specified user",
+        404
+      );
     }
 
     const newTicket = await db.ticket.create({
@@ -36,7 +41,7 @@ const createTicket = async (req: Request, res: Response) => {
 
     return successResponse(res, "Ticket created successfully", newTicket);
   } catch (e: any) {
-    return errorResponse(res, "Error Creating Ticket -" + e.message, 500);
+    return errorResponse(req, res, "Error Creating Ticket -" + e.message, 500);
   }
 };
 
@@ -47,7 +52,7 @@ const purchaseTicket = async (req: Request, res: Response) => {
   const { quantity } = purchaseTicketSchema.parse(req.body);
 
   if (!userId) {
-    return errorResponse(res, "User not authenticated", 401);
+    return errorResponse(req, res, "User not authenticated", 401);
   }
 
   try {
@@ -57,15 +62,20 @@ const purchaseTicket = async (req: Request, res: Response) => {
     });
 
     if (!ticket || ticket.eventId !== eventId) {
-      return errorResponse(res, "Ticket not found", 404);
+      return errorResponse(req, res, "Ticket not found", 404);
     }
 
     if (ticket.userId === userId) {
-      return errorResponse(res, "You cannot purchase your own ticket", 400);
+      return errorResponse(
+        req,
+        res,
+        "You cannot purchase your own ticket",
+        400
+      );
     }
 
     if (ticket.quantityLeft < quantity) {
-      return errorResponse(res, "Not enough tickets left", 400);
+      return errorResponse(req, res, "Not enough tickets left", 400);
     }
 
     await db.ticket.update({
@@ -87,7 +97,12 @@ const purchaseTicket = async (req: Request, res: Response) => {
 
     return successResponse(res, "Ticket purchased successfully", newPurchase);
   } catch (e: any) {
-    return errorResponse(res, "Error Purchasing Ticket - " + e.message, 500);
+    return errorResponse(
+      req,
+      res,
+      "Error Purchasing Ticket - " + e.message,
+      500
+    );
   }
 };
 

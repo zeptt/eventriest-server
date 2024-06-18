@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import producer from "./kafka-client";
 
 export const successResponse = (
@@ -14,7 +14,12 @@ export const successResponse = (
   });
 };
 
-export const errorResponse = async (res: Response, message: string, status = 400) => {
+export const errorResponse = async (
+  req: Request,
+  res: Response,
+  message: string,
+  status = 400
+) => {
   await producer.send({
     topic: "logger",
     messages: [
@@ -23,6 +28,13 @@ export const errorResponse = async (res: Response, message: string, status = 400
           level: "error",
           message,
           timestamp: new Date().toISOString(),
+          meta: {
+            req: {
+              method: req.method,
+              url: req.url,
+              ip: req.ip,
+            },
+          },
         }),
         key: `API_SERVER-ERROR-`,
       },

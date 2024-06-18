@@ -16,7 +16,7 @@ const getAllEvents = async (req: Request, res: Response) => {
       });
 
       if (!user) {
-        return errorResponse(res, "User not found", 404);
+        return errorResponse(req, res, "User not found", 404);
       }
 
       events = await db.event.findMany({
@@ -27,6 +27,7 @@ const getAllEvents = async (req: Request, res: Response) => {
 
       if (!events.length) {
         return errorResponse(
+          req,
           res,
           "No events found for the specified user",
           404
@@ -38,7 +39,7 @@ const getAllEvents = async (req: Request, res: Response) => {
 
     return successResponse(res, "Events fetched successfully", events);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -52,12 +53,12 @@ const getEvent = async (req: Request, res: Response) => {
     });
 
     if (!event) {
-      return errorResponse(res, "Event not found", 404);
+      return errorResponse(req, res, "Event not found", 404);
     }
 
     return successResponse(res, "Event fetched successfully", event);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -70,12 +71,12 @@ const getLoggedInUserEvents = async (req: Request, res: Response) => {
     });
 
     if (!events) {
-      return errorResponse(res, "No events found", 404);
+      return errorResponse(req, res, "No events found", 404);
     }
 
     return successResponse(res, "Events fetched successfully", events);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -90,11 +91,12 @@ const getLoggedInEvent = async (req: Request, res: Response) => {
     });
 
     if (!event) {
-      return errorResponse(res, "Event not found", 404);
+      return errorResponse(req, res, "Event not found", 404);
     }
 
     if (event.organizerId !== req.session.user?.id) {
       return errorResponse(
+        req,
         res,
         "You are not authorized to view this event",
         403
@@ -103,7 +105,7 @@ const getLoggedInEvent = async (req: Request, res: Response) => {
 
     return successResponse(res, "Event fetched successfully", event);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -115,7 +117,12 @@ const createEvent = async (req: Request, res: Response) => {
     const organizerId = req.session.user?.id;
 
     if (organizerId === undefined) {
-      return errorResponse(res, "Organizer ID is missing, Please Login", 400);
+      return errorResponse(
+        req,
+        res,
+        "Organizer ID is missing, Please Login",
+        400
+      );
     }
 
     const event = await db.event.create({
@@ -131,7 +138,7 @@ const createEvent = async (req: Request, res: Response) => {
 
     return successResponse(res, "Event created successfully", event);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -149,11 +156,12 @@ const updateEvent = async (req: Request, res: Response) => {
     });
 
     if (!event) {
-      return errorResponse(res, "Event not found", 404);
+      return errorResponse(req, res, "Event not found", 404);
     }
 
     if (event.organizerId !== req.session.user?.id) {
       return errorResponse(
+        req,
         res,
         "You are not authorized to update this event",
         403
@@ -175,7 +183,7 @@ const updateEvent = async (req: Request, res: Response) => {
 
     return successResponse(res, "Event updated successfully", updatedEvent);
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 
@@ -190,11 +198,12 @@ const deleteEvent = async (req: Request, res: Response) => {
     });
 
     if (!event) {
-      return errorResponse(res, "Event not found", 404);
+      return errorResponse(req, res, "Event not found", 404);
     }
 
     if (event.organizerId !== req.session.user?.id) {
       return errorResponse(
+        req,
         res,
         "You are not authorized to delete this event",
         403
@@ -209,7 +218,7 @@ const deleteEvent = async (req: Request, res: Response) => {
 
     return successResponse(res, "Event deleted successfully", {});
   } catch (e: any) {
-    return errorResponse(res, e.message, 500);
+    return errorResponse(req, res, e.message, 500);
   }
 };
 

@@ -9,7 +9,7 @@ ticketRouter.post("/:eventId/tickets/:ticketId/purchase", purchaseTicket);
 
 ticketRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    errorResponse(res, "Ticket Router Error" + err.message, 500);
+    errorResponse(req, res, "Ticket Router Error" + err.message, 500);
   }
 );
 

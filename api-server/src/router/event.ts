@@ -22,7 +22,7 @@ eventRouter.delete("/:id", deleteEvent);
 
 eventRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    errorResponse(res, "Event Router Error"+ err.message, 500);
+    errorResponse(req, res, "Event Router Error"+ err.message, 500);
   }
 );
 

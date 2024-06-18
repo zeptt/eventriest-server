@@ -25,18 +25,6 @@ async function runServer() {
   app.use(rateLimiter);
   app.set("trust proxy", true);
 
-  // LOGGER MIDDLEWARE MOST EFFICIENT
-  app.use((req, res, next) => {
-    console.log("Request URL:", req.originalUrl);
-
-    console.log("Request Type:", req.method);
-
-    console.log("Request IP:", req.ip);
-
-    console.log("Request Time:", Date.now());
-    next();
-  });
-
   const client = redis.createClient({
     url: process.env.REDIS_URL,
   });
