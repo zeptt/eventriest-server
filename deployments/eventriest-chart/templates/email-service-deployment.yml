@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.EmailService.Deployment.Name }}
+  labels:
+    app: {{ .Values.EmailService.Deployment.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.EmailService.Deployment.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.EmailService.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.EmailService.Deployment.ContainerName }}
+          image: {{ .Values.EmailService.Deployment.ContainerImage }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+          envFrom:
+            - secretRef:
+                name: {{ .Values.EmailService.Secret.Name }}
+          ports:
+            - containerPort:
+                {{ .Values.EmailService.Deployment.ContainerPort }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.EmailService.Service.Name }}
+spec:
+  selector:
+    app: {{ .Values.EmailService.Deployment.Name }}
+  type: {{ .Values.EmailService.Service.Type }}
+  ports:
+    - port: {{ .Values.EmailService.Service.Port }}
+      targetPort: {{ .Values.EmailService.Service.TargetPort }}

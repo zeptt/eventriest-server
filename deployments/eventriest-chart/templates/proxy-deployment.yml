@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Proxy.Deployment.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.Proxy.Deployment.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Proxy.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.Proxy.Deployment.ContainerName }}
+          image: {{ .Values.Proxy.Deployment.ContainerImage }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+          ports:
+            - containerPort: {{ .Values.Proxy.Deployment.ContainerPort }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Proxy.Service.Name }}
+spec:
+  selector:
+    app: {{ .Values.Proxy.Deployment.Name }}
+  type: {{ .Values.Proxy.Service.Type }}
+  ports:
+    - port: {{ .Values.Proxy.Service.Port }}
+      targetPort: {{ .Values.Proxy.Service.TargetPort }}
+      nodePort: {{ .Values.Proxy.Service.NodePort }}

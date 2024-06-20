@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ApiServer.Deployment.Name }}
+  labels:
+    app: {{ .Values.ApiServer.Deployment.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.ApiServer.Deployment.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ApiServer.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.ApiServer.Deployment.ContainerName }}
+          image: {{ .Values.ApiServer.Deployment.ContainerImage }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+          envFrom:
+            - secretRef:
+                name: {{ .Values.ApiServer.Secret.Name }}
+          ports:
+            - containerPort: {{ .Values.ApiServer.Deployment.ContainerPort }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ApiServer.Service.Name }}
+spec:
+  type: {{ .Values.ApiServer.Service.Type }}
+  selector:
+    app: {{ .Values.ApiServer.Deployment.Name }}
+  ports:
+    - port: {{ .Values.ApiServer.Service.Port }}
+      targetPort: {{ .Values.ApiServer.Service.TargetPort }}

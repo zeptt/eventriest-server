@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.CacheService.ConfigMap.Name }}
+  labels:
+    app: {{ .Values.CacheService.Deployment.Name }}
+data:
+  PORT: {{ .Values.CacheService.Deployment.ContainerPort | quote }}
+  CACHE_SERVER_URL: {{ printf "http://%s:%.0f" .Values.ApiServer.Service.Name .Values.ApiServer.Service.Port | quote }}
+  REDIS_URL: {{ printf "redis://%s:%.0f" .Values.Redis.Service.Name .Values.Redis.Service.Port | quote }}

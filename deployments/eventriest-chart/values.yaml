@@ -1,0 +1,81 @@
+ApiServer:
+  Deployment:
+    Name: "api-service"
+    ContainerName: "api-service"
+    ContainerImage: "geoffreyanto12/api-server:latest"
+    ContainerPort: 80
+  Service:
+    Name: "api-service"
+    Type: "LoadBalancer"
+    Port: 80
+    TargetPort: 80
+  Secret:
+    Name: "api-service-secret"
+
+CacheService:
+  Deployment:
+    Name: "cache-service"
+    ContainerName: "cache-service"
+    ContainerImage: "geoffreyanto12/cache-service:latest"
+    ContainerPort: 50052
+  Service:
+    Name: "cache-service"
+    Type: "LoadBalancer"
+    Port: 50052
+    TargetPort: 50052
+  ConfigMap:
+    Name: "cache-service-configmap"
+
+EmailService:
+  Deployment:
+    Name: "email-service"
+    ContainerName: "email-service"
+    ContainerImage: "geoffreyanto12/email-service:latest"
+    ContainerPort: 50051
+  Service:
+    Name: "email-service"
+    Type: "LoadBalancer"
+    Port: 50051
+    TargetPort: 50051
+  Secret:
+    Name: "email-service-secret"
+
+Proxy:
+  Deployment:
+    Name: "proxy"
+    ContainerName: "proxy"
+    ContainerImage: "geoffreyanto12/proxy:latest"
+    ContainerPort: 80
+  Service:
+    Name: "proxy"
+    Type: "LoadBalancer"
+    Port: 80
+    TargetPort: 80
+    NodePort: 30000
+
+Postgres:
+  Deployment:
+    Name: "postgres"
+    ContainerName: "postgres"
+    ContainerImage: "postgres:latest"
+    ContainerPort: 5432
+  Service:
+    Name: "postgres"
+    Port: 5432
+    TargetPort: 5432
+  ConfigMap:
+    Name: "postgres-configmap"
+    DB: "mydb"
+    User: "postgres"
+    Password: "postgres"
+
+Redis:
+  Deployment:
+    Name: "redis"
+    ContainerName: "redis"
+    ContainerImage: "redis:latest"
+    ContainerPort: 6379
+  Service:
+    Name: "redis"
+    Port: 6379
+    TargetPort: 6379

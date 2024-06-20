@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Postgres.Deployment.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.Postgres.Deployment.Name }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Postgres.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.Postgres.Deployment.ContainerName }}
+          image: {{ .Values.Postgres.Deployment.ContainerImage | quote }}
+          ports:
+            - containerPort: {{ .Values.Postgres.Deployment.ContainerPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.Postgres.ConfigMap.Name }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Postgres.Service.Name }}
+  labels:
+    app: {{ .Values.Postgres.Deployment.Name }}
+spec:
+  selector:
+    app: {{ .Values.Postgres.Deployment.Name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.Postgres.Service.Port }}
+      targetPort: {{ .Values.Postgres.Service.TargetPort }}

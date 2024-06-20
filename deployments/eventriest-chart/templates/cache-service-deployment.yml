@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.CacheService.Deployment.Name }}
+  labels:
+    app: {{ .Values.CacheService.Deployment.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.CacheService.Deployment.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.CacheService.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.CacheService.Deployment.ContainerName }}
+          image: {{ .Values.CacheService.Deployment.ContainerImage }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.CacheService.ConfigMap.Name }}
+          ports:
+            - containerPort:
+                {{ .Values.CacheService.Deployment.ContainerPort }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.CacheService.Service.Name }}
+spec:
+  selector:
+    app: {{ .Values.CacheService.Deployment.Name }}
+  type: {{ .Values.CacheService.Service.Type }}
+  ports:
+    - port: {{ .Values.CacheService.Service.Port }}
+      targetPort: {{ .Values.CacheService.Service.TargetPort }}

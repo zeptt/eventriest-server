@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Redis.Deployment.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.Redis.Deployment.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Redis.Deployment.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.Redis.Deployment.ContainerName }}
+          image: {{ .Values.Redis.Deployment.ContainerImage }}
+          ports:
+            - containerPort: {{ .Values.Redis.Deployment.ContainerPort }}
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "0.5m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Redis.Service.Name }}
+spec:
+  selector:
+    app: {{ .Values.Redis.Deployment.Name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.Redis.Service.Port }}
+      targetPort: {{ .Values.Redis.Service.TargetPort }}
