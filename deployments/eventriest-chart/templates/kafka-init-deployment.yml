@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-kafka
+spec:
+  template:
+    spec:
+      containers:
+      - name: init-kafka
+        image: bitnami/kafka:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            kafka-topics.sh --bootstrap-server kafka:9092 --list;
+            kafka-topics.sh --create --partitions 2 --replication-factor 1 --bootstrap-server kafka:9092 --topic logger;
+      restartPolicy: Never
+  backoffLimit: 4

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: bitnami/kafka:latest
+        resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+        ports:
+        - containerPort: 9092
+        envFrom:
+        - configMapRef:
+            name: kafka-config
+        env:
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          value: "zookeeper:2181"
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /opt/bitnami/kafka/data
+      volumes:
+      - name: kafka-storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  ports:
+  - name: kafka-internal
+    port: 9092
+    targetPort: 9092
+  - name: kafka-external
+    port: 29092
+    targetPort: 9092
+  selector:
+    app: kafka
+  type: NodePort
