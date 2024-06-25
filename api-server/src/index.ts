@@ -4,6 +4,7 @@ import * as redis from "redis";
 import RedisStore from "connect-redis";
 import session from "express-session";
 import { rateLimiter } from "./middlewares/rateLimiter";
+import cors from "cors";
 
 interface User {
   id: number;
@@ -19,9 +20,10 @@ declare module "express-session" {
 
 async function runServer() {
   const app = express();
-
+  
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
   app.use(rateLimiter);
   app.set("trust proxy", true);
 
@@ -39,7 +41,8 @@ async function runServer() {
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
+      //TODO: Set A Proper Max Age
+      maxAge: 999999999999,
     },
   });
 
