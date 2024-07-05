@@ -122,4 +122,16 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
-export { login, register, logout };
+const getAuthUser = async (req: Request, res: Response) => {
+  try {
+    if (req.session.user) {
+      return successResponse(res, "User found", req.session.user);
+    } else {
+      return errorResponse(req, res, "User not found", 404);
+    }
+  } catch (e: any) {
+    return errorResponse(req, res, e.message, 500);
+  }
+}
+
+export { login, register, logout, getAuthUser };

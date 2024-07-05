@@ -36,6 +36,7 @@ async function runServer() {
   const sessionMiddleware = session({
     store: new RedisStore({ client }),
     secret: process.env.SESSION_SECRET || "my-secret",
+    name: "sid",
     resave: false,
     saveUninitialized: false,
     cookie: {

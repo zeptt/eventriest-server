@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { login, logout, register } from "../controller/login";
+import { getAuthUser, login, logout, register } from "../controller/login";
 import { errorResponse } from "../utils/responses";
 
 const authRouter = Router();
@@ -7,6 +7,8 @@ const authRouter = Router();
 authRouter.post("/login", login);
 authRouter.post("/register", register);
 authRouter.post("/logout", logout);
+
+authRouter.get("/verify", getAuthUser);
 
 authRouter.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {

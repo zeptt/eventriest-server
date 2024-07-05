@@ -37,11 +37,11 @@ func SingleJoiningSlash(a, b string) string {
 // Example: /api/v1/user-:-1234
 // TODO: Make the session ID name configurable
 func BuildCacheKey(r *http.Request) string {
-	ck, _ := r.Cookie("connect.sid")
+	ck, _ := r.Cookie("sid")
 
 	if ck == nil {
 		ck = &http.Cookie{
-			Name:  "connect.sid",
+			Name:  "sid",
 			Value: "",
 		}
 	}
