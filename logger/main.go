@@ -69,7 +69,7 @@ func main() {
 		fmt.Println("subscribed to topic ", env.KAFKA_TOPIC)
 	}
 
-	go processQueue(consumer)
+	// go processQueue(consumer)
 
 	// to stop the code from exiting
 	wg := sync.WaitGroup{}

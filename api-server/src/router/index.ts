@@ -41,7 +41,7 @@ mainRouter.get("/protected", (req, res) => {
 mainRouter.use("/user", userRouter);
 
 // Ticket Routes
-mainRouter.use("/event", ticketRouter);
+mainRouter.use("/ticket", ticketRouter);
 
 // 404 Fallback
 mainRouter.use((_, res) => {
