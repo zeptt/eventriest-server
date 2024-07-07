@@ -13,6 +13,8 @@ The benchmarking environment consists of the following components, orchestrated 
 - **CPU**: AMD Ryzen 5 5700G
 - **Memory**: 16 GB DDR4
 
+- **TTL For Cache**: 25 seconds
+
 Each request transfers data consisting of 50 events, with each event represented as a JSON object of approximately 815 bytes, resulting in a total data size of 18.47 KB per request.
 
 ## Benchmark Results
