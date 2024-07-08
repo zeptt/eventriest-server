@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"time"
-
+	compressor "cache-server/cmp"
 	"github.com/redis/go-redis/v9"
 
 	utils "cache-server/cmd/utils"
@@ -40,7 +40,14 @@ func HandleRequest(w http.ResponseWriter, r *http.Request, client *CacheClient) 
 		// CACHE MISS
 		fmt.Println("Cache hit")
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(cachedResponse))
+		
+		decompressedData, err := compressor.GzipDecompress([]byte(cachedResponse))
+		if err != nil {
+			fmt.Println("Error decompressing data:", err)
+			return
+		}
+		
+		w.Write(decompressedData)
 	}
 }
 
@@ -81,7 +88,13 @@ func handler(w http.ResponseWriter, r *http.Request, c *CacheClient) {
 	}
 
 	// Close the response body
-	resp.Body.Close()
+	defer resp.Body.Close()
+
+	compressedData, err := compressor.GzipCompress(body)
+	if err != nil {
+		fmt.Println("Error compressing data:", err)
+		return
+	}
 
 	// Copy the response headers and status code to the client's response
 	utils.CopyHeader(w.Header(), resp.Header)
@@ -102,5 +115,5 @@ func handler(w http.ResponseWriter, r *http.Request, c *CacheClient) {
 	cacheTTL := utils.GetTTLTimeForCache(r)
 
 	// Set the response in the cache (Redis)
-	c.client.Set(r.Context(), cacheKey, string(body), time.Second*time.Duration(cacheTTL))
+	c.client.Set(r.Context(), cacheKey, string(compressedData), time.Second*time.Duration(cacheTTL))
 }
